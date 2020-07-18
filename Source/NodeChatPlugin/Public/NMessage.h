@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EAddressType.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
 
@@ -33,6 +32,12 @@ public:
 	 */
 	FString to;
 
+
+	/**
+	 * sender msg
+	 */
+	FString from;
+
 	/**
 	 * convert class to json 
 	 * @return json 
@@ -45,4 +50,11 @@ public:
 	 * @return FString
 	 */
 	FString toFString();
+
+	/**
+	 * Create new class from text message
+	 * @param str FSting
+	 * @return NMessage*
+	 */
+	static NMessage* fMakeMsgFromString(const FString& str);
 };

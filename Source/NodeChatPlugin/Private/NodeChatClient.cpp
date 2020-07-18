@@ -1,29 +1,55 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "NodeChatClient.h"
-#include "EAddressType.h"
+
+
+void UNodeChatClient::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void UNodeChatClient::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+
+}
+
 
 void UNodeChatClient::fInit(UNodeSocketAC* _vUNodeSocketAC)
 {
 	vUNodeSocketAC = _vUNodeSocketAC;
+	vUNodeSocketAC->OnReceivedStr.AddDynamic(this, &UNodeChatClient::fOnReserveMsgCallback);
 }
 
 bool UNodeChatClient::fSendMsg(NMessage* msg)
 {
-	return false;
+	this->vUNodeSocketAC->EmitStr(msg->toFString());
+	return true;
 }
 
-bool UNodeChatClient::fSendMsgToDefaultRoom(NMessage* msg)
+bool UNodeChatClient::fSendMsgToDefaultRoom(FString msg)
 {
 	bool bOk = true;
-	if (msg != nullptr)
-	{
-		msg->address_type = EAddressType::Room;
-		msg->to = TEXT(default_room);
-		bOk = fSendMsg(msg);
-	}
+
+	NMessage* vMsg = new NMessage;
+
+	vMsg->address_type = 2;
+	vMsg->to = TEXT(default_room);
+	vMsg->content = msg;
+	bOk = fSendMsg(vMsg);
+
+	delete vMsg;
 
 	return bOk;
 
+}
+
+FString UNodeChatClient::fGetContentFromAMsg(int32 msgId)
+{
+	TSharedPtr<NMessage> msg = MakeShareable(NMessage::fMakeMsgFromString(aMessage[msgId]));
+	return msg->content;
+}
+
+void UNodeChatClient::fOnReserveMsgCallback(const FString& msg)
+{
+	aMessage.Add(msg);
 }

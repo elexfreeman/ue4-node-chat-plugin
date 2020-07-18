@@ -30,3 +30,19 @@ FString NMessage::toFString()
 
 	return OutputString;
 }
+
+NMessage* NMessage::fMakeMsgFromString(const FString& str)
+{
+	NMessage* resp = new NMessage;
+
+	TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(str);
+	TSharedPtr<FJsonObject> request = MakeShareable(new FJsonObject);
+	FJsonSerializer::Deserialize(JsonReader, request);
+
+	request->TryGetStringField("content", resp->content);
+	request->TryGetNumberField("address_type", resp->address_type);
+	request->TryGetStringField("from", resp->from);
+	request->TryGetStringField("to", resp->to);
+
+	return resp;
+}
