@@ -14,15 +14,10 @@ void UNodeChatClient::EndPlay(const EEndPlayReason::Type EndPlayReason)
 }
 
 
-void UNodeChatClient::fInit(UNodeSocketAC* _vUNodeSocketAC)
-{
-	vUNodeSocketAC = _vUNodeSocketAC;
-	vUNodeSocketAC->OnReceivedStr.AddDynamic(this, &UNodeChatClient::fOnReserveMsgCallback);
-}
-
 bool UNodeChatClient::fSendMsg(NMessage* msg)
 {
-	this->vUNodeSocketAC->EmitStr(msg->toFString());
+	this->aMessage.Add(msg->toFString());
+	onSendChatMsg.Broadcast(msg->toFString());
 	return true;
 }
 
@@ -30,14 +25,12 @@ bool UNodeChatClient::fSendMsgToDefaultRoom(FString msg)
 {
 	bool bOk = true;
 
-	NMessage* vMsg = new NMessage;
+	TSharedPtr<NMessage> vMsg = MakeShareable(new NMessage);
 
 	vMsg->address_type = 2;
 	vMsg->to = TEXT(default_room);
 	vMsg->content = msg;
-	bOk = fSendMsg(vMsg);
-
-	delete vMsg;
+	bOk = fSendMsg(vMsg.Get());
 
 	return bOk;
 
@@ -49,7 +42,15 @@ FString UNodeChatClient::fGetContentFromAMsg(int32 msgId)
 	return msg->content;
 }
 
-void UNodeChatClient::fOnReserveMsgCallback(const FString& msg)
+FString UNodeChatClient::fGetContentFromMsg(const FString& sMsg)
 {
-	aMessage.Add(msg);
+	TSharedPtr<NMessage> msg = MakeShareable(NMessage::fMakeMsgFromString(sMsg));
+	return msg->content;
+}
+
+void UNodeChatClient::fOnReserveMsg(const FString& msg)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, TEXT("MSMSS"));
+	this->aMessage.Add(msg);
+	onReserveChatMsg.Broadcast(msg);
 }

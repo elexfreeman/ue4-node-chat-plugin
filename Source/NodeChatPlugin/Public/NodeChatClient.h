@@ -11,6 +11,19 @@
 #include "NMessage.h"
 #include "NodeChatClient.generated.h"
 
+
+
+// when did you get the string
+UDELEGATE(BlueprintAuthorityOnly)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnReserveChatMsg, const  FString&, Msg);
+
+
+// when did you get the string
+UDELEGATE(BlueprintAuthorityOnly)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSendChatMsg, const  FString&, Msg);
+
+
+
 /**
  * Node chat component
  */
@@ -27,27 +40,21 @@ protected:
 
 public:
 
-	/** 
-	 * socket conector
-	 */
-	UPROPERTY(BlueprintReadWrite, Category = "AA_Net")
-	UNodeSocketAC* vUNodeSocketAC;
+	UPROPERTY(BlueprintReadWrite, BlueprintAssignable, BlueprintCallable, Category = "AA_Net")
+		FOnReserveChatMsg onReserveChatMsg;
+
+	UPROPERTY(BlueprintReadWrite, BlueprintAssignable, BlueprintCallable, Category = "AA_Net")
+		FOnSendChatMsg onSendChatMsg;
+
 
 	/** 
 	 * reserverd messages 
 	 */
-	UPROPERTY(BlueprintReadWrite, Category = "AA_Net")
-	TArray<FString> aMessage;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AA_Net")
+		TArray<FString> aMessage;
 
-	/*
-	 * Init socket
-	 */
-	UFUNCTION(BlueprintCallable, Category = "AA_Net")
-		void fInit(UNodeSocketAC* _vUNodeSocketAC);
-
-	
+		
 	bool fSendMsg(NMessage* msg);
-
 
 	/**
 	 * Send message to default connect room
@@ -61,11 +68,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AA_Net")
 		FString fGetContentFromAMsg(int32 msgId);
+	
+	UFUNCTION(BlueprintCallable, Category = "AA_Net")
+		FString fGetContentFromMsg(const  FString& msg);
 
 	/**
 	 * Reserve msg from node server
 	 * @param msg FString
 	 */
-	void fOnReserveMsgCallback(const  FString& msg);
+	UFUNCTION(BlueprintCallable, Category = "AA_Net")
+		void fOnReserveMsg(const  FString& msg);
 	
 };
