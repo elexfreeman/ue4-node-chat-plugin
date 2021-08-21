@@ -20,12 +20,7 @@ public:
 	 */
 	FString content;
 
-	/**
-	 * Type of resever Room or Private
-	 * 1 - Private
-	 * 2 - Room;
-	 */
-	int32 address_type = 1;
+	FString route; 
 
 	/**
 	 * resever of msg
