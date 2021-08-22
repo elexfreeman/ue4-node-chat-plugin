@@ -5,40 +5,42 @@
 #include "CoreMinimal.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
-
 /**
  * 
  */
-class NODECHATPLUGIN_API NMessage
+class UNMessage
 {
 public:
-	NMessage();
-	~NMessage();
+	UNMessage();
+	~UNMessage();
 
 	/**
 	 * msg text or content
 	 */
-	FString content;
+	FString content = TEXT("");
 
-	FString route; 
+	FString route = TEXT("");
 
 	/**
 	 * resever of msg
 	 */
-	FString to;
-
+	FString to = TEXT("");
 
 	/**
 	 * sender msg
 	 */
-	FString from;
+	FString from = TEXT("");
+
+	/**
+	 * sender user
+	 */
+	int32 sender = -1;
 
 	/**
 	 * convert class to json 
 	 * @return json 
 	 */
 	TSharedPtr<FJsonObject> toJson();
-
 
 	/**
 	 * convert class to string
@@ -49,7 +51,7 @@ public:
 	/**
 	 * Create new class from text message
 	 * @param str FSting
-	 * @return NMessage*
+	 * @return UNMessage*
 	 */
-	static NMessage* fMakeMsgFromString(const FString& str);
+	static UNMessage *fMakeMsgFromString(const FString &str);
 };

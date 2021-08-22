@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "NMessage.h"
+#include "UNMessage.h"
 
-NMessage::NMessage()
+UNMessage::UNMessage()
 {
 }
 
-NMessage::~NMessage()
+UNMessage::~UNMessage()
 {
 }
 
-TSharedPtr<FJsonObject> NMessage::toJson()
+TSharedPtr<FJsonObject> UNMessage::toJson()
 {
     TSharedPtr<FJsonObject> resp = MakeShareable(new FJsonObject);
 
@@ -21,7 +21,7 @@ TSharedPtr<FJsonObject> NMessage::toJson()
     return resp;
 }
 
-FString NMessage::toFString()
+FString UNMessage::toFString()
 {
     FString OutputString;
     TSharedRef<TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
@@ -30,9 +30,9 @@ FString NMessage::toFString()
     return OutputString;
 }
 
-NMessage *NMessage::fMakeMsgFromString(const FString &str)
+UNMessage *UNMessage::fMakeMsgFromString(const FString &str)
 {
-    NMessage *resp = new NMessage;
+    UNMessage *resp = new UNMessage;
 
     TSharedRef<TJsonReader<TCHAR> > JsonReader = TJsonReaderFactory<TCHAR>::Create(str);
     TSharedPtr<FJsonObject> request = MakeShareable(new FJsonObject);
@@ -42,6 +42,7 @@ NMessage *NMessage::fMakeMsgFromString(const FString &str)
     request->TryGetStringField("route", resp->route);
     request->TryGetStringField("from", resp->from);
     request->TryGetStringField("to", resp->to);
+    request->TryGetNumberField("sender", resp->sender);
 
     return resp;
 }
