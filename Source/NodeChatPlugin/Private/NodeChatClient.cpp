@@ -9,13 +9,15 @@ void UNodeChatClient::BeginPlay()
 
 void UNodeChatClient::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+    this->aUserList.Empty();
+    this->aMessage.Empty();
 }
 
-bool UNodeChatClient::fSendMsg(UNMessage *msg)
+bool UNodeChatClient::fSendMsg(TSharedPtr<UNMessage> vMsg)
 {
-    this->aMessage.Add(msg->toFString());
-    onSendChatMsg.Broadcast(msg->toFString());
-    this->vNodeSocketAC->EmitStr(msg->toFString());
+    this->aMessage.Add(vMsg->toFString());
+    onSendChatMsg.Broadcast(vMsg->toFString());
+    this->vNodeSocketAC->EmitStr(vMsg->toFString());
     return true;
 }
 
@@ -28,7 +30,7 @@ bool UNodeChatClient::fSendMsgToDefaultRoom(FString msg)
     vMsg->route = TEXT("msg_room");
     vMsg->to = TEXT(default_room);
     vMsg->content = msg;
-    bOk = fSendMsg(vMsg.Get());
+    bOk = fSendMsg(vMsg);
 
     return bOk;
 }
@@ -92,7 +94,7 @@ bool UNodeChatClient::fInit(UNodeSocketAC *_vNodeSocketAC)
     vMsg->route = TEXT("user_list");
     vMsg->to = TEXT(default_room);
     vMsg->content = TEXT("");
-    fSendMsg(vMsg.Get());
+    fSendMsg(vMsg);
 
     return true;
 }

@@ -61,7 +61,7 @@ public:
     TArray<FUserListItem> aUserList;
 
 
-    bool fSendMsg(UNMessage *msg);
+    bool fSendMsg(TSharedPtr<UNMessage> vMsg);
 
     /**
 	 * Send message to default connect room
